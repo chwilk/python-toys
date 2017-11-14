@@ -11,14 +11,15 @@ def lensort(x,y):
     else:
         return(cmp(x,y))
 
-def divide(jumb, limit):
+def divide(req, jumb, limit):
     """Recursive function to search for substrings in dictionary"""
     words=[]
     if len(jumb) > limit:
 	for i in range(0,len(jumb)):
-            words.extend(divide(jumb[:i]+jumb[i+1:], limit))
-    if alpha.has_key(jumb):
-        words.extend(alpha[jumb])
+            words.extend(divide(req, jumb[:i]+jumb[i+1:], limit))
+    key = ''.join(sorted(jumb+req))
+    if alpha.has_key(key):
+        words.extend(alpha[key])
     return(sorted(list(set(words)),lensort))
     
 
@@ -37,13 +38,21 @@ if __name__ == "__main__":
                 else:
                     alpha[key]=[word]
     print "Read {} words\n".format(len(alpha))
-    print "Type 'q' to exit\n"
+    print "Type 'q' to exit. Use a space to separate must-have letters\n"
     jumb=''
     while(jumb != 'q'):
         try:
-            jumb = str(raw_input("Jumble> ")).rstrip()
-            limit = max(3, len(jumb)-myrange)
-            for i in divide(''.join(sorted(jumb)), limit):
+            jumb = str(raw_input("Jumbl3> ")).rstrip()
+            """Handle a space"""
+            jumbs = jumb.split()
+            if len(jumbs) > 1:
+                req = jumbs[0]
+                jumb = jumbs[1]
+                limit = max(0, len(jumb)-myrange)
+            else:
+                req = ""
+                limit = max(3, len(jumb)-myrange)
+            for i in divide(req, ''.join(sorted(jumb)), limit):
                 print i
         except KeyboardInterrupt:
             print "Exiting"
